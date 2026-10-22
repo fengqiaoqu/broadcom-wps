@@ -4,7 +4,7 @@ This repository contains two ways to detect the presence of Broadcom's 802.11 im
 1. Statically using YARA rules on extracted firmware
 2. Dynamically by running a fingerprinting script against a live access point
 
-The list of affected devices is available at the end of this page. **This list is not exhaustive**. We expect the complete list to contains thousands of different devices, make and models.
+The list of affected devices is available at the end of this page. **This list is not exhaustive**. We expect the complete list to contain thousands of different devices, make and models.
 
 ## Broadcom WPS Monitor YARA rules
 
@@ -49,7 +49,7 @@ sudo ip link set dev wlp0s12u1 up
 > suspect the adapter rather than the target. Known-good chipsets for this kind
 > of work include MediaTek `mt76`, Atheros `ath9k_htc`, and Realtek `rtl8812au`.
 
-You should seem something like this on affected devices:
+You should see something like this on affected devices:
 
 ```
 sudo uv run --with scapy broadcom_fingerprint.py --interface wlp0s12u1 --ssid VOO-111317
@@ -186,7 +186,7 @@ the fingerprinting script using a wireless interface in monitor mode.
 | Huawei | B310 | - | ALL | - |
 | Huawei | B315 | - | ALL | - |
 | Huawei | B593 | - | ALL | - |
-| Huawei | Spedport W 724V Typ A | ALL | Y | Deutsche Telekom |
+| Huawei | Speedport W 724V Typ A | ALL | Y | Deutsche Telekom |
 | Huawei | Speedport Hybrid | ALL | Y | Deutsche Telekom |
 | Huawei | WS880 | - | ALL | - |
 | NetComm | NF4V | ALL | Y | Exetel, Harbour ISP, Spintel |
