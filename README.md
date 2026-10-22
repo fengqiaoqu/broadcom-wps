@@ -32,26 +32,54 @@ yara -w -r broadcom_wps_monitor.yar extracted_firmware_dir
 
 ## Broadcom SDK Fingerprinter
 
-Make sure your interface supports monitor mode and enable monitor mode:
+Make sure your interface supports monitor mode and enable monitor mode.
 
-```
+> [!TIP]
+> **Prevent NetworkManager interference:** Before switching to monitor mode, prevent NetworkManager from managing or resetting the interface:
+> ```sh
+> sudo nmcli device set <interface> managed no
+> ```
+
+Enable monitor mode using the `otherbss control` flags (important: without `otherbss`, drivers such as MediaTek `mt76` / `mt7921` will drop frames from other BSSIDs):
+
+```sh
 sudo ip link set dev wlp0s12u1 down
-sudo iw dev wlp0s12u1 set monitor none
+sudo iw dev wlp0s12u1 set monitor otherbss control
 sudo ip link set dev wlp0s12u1 up
 ```
 
+### Quick Verification
+
+Verify that your card is receiving frames in monitor mode with `tcpdump` (set to a channel with known traffic, e.g., channel 1, 3, or 6):
+
+```sh
+sudo iw dev wlp0s12u1 set channel 6
+sudo tcpdump -i wlp0s12u1 -e -n -c 5 "type mgt subtype beacon"
+```
+
+If beacons appear, your adapter is successfully receiving 802.11 frames.
+
 > **Note on hardware:** monitor mode / frame injection is very driver-dependent.
-> In my testing the built-in **Intel Dual Band Wireless-AC 7265** (`iwlwifi`)
+> In testing, the built-in **Intel Dual Band Wireless-AC 7265** (`iwlwifi`)
 > accepted `type monitor` but captured **zero** frames (no beacons even with a
-> strong signal), so the fingerprinter never locked onto a target. A USB adapter
-> with a MediaTek chipset — **MT7921AU** (USB id `0e8d:7961`, driver `mt7921u`) —
-> worked immediately. If the script keeps sweeping without finding your SSID,
-> suspect the adapter rather than the target. Known-good chipsets for this kind
-> of work include MediaTek `mt76`, Atheros `ath9k_htc`, and Realtek `rtl8812au`.
+> strong signal), so the fingerprinter never locked onto a target. MediaTek chipsets
+> — such as **MT7921AU** (USB id `0e8d:7961`, driver `mt7921u`) or **MT7922** (`mt7921e`) —
+> work properly when configured with `set monitor otherbss control`. If the script keeps
+> sweeping without finding your SSID, check that `otherbss` is enabled and test with `tcpdump`.
+> Known-good chipsets for this kind of work include MediaTek `mt76`, Atheros `ath9k_htc`, and Realtek `rtl8812au`.
+
+### Running the Fingerprinter
+
+> [!TIP]
+> If `uv` is installed in your user directory (e.g., `~/.local/bin/uv`) and `sudo` reports `uv: command not found`, either run with `sudo env "PATH=$PATH"` or directly invoke the virtual environment's Python:
+> ```sh
+> sudo .venv/bin/python broadcom_fingerprint.py --interface <interface> --ssid "<SSID>"
+> ```
+> *(Always wrap the SSID in quotes if it contains spaces or special characters).*
 
 You should see something like this on affected devices:
 
-```
+```sh
 sudo uv run --with scapy broadcom_fingerprint.py --interface wlp0s12u1 --ssid VOO-111317
 Scanning channels 1-13 for SSID 'VOO-111317' (sweep 1)...
 SSID:       VOO-111317
