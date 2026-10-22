@@ -1400,7 +1400,12 @@ def build_parser() -> argparse.ArgumentParser:
 def _artifact_directory(root: Path) -> Path:
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S.%fZ")
     path = (root / f"broadcom-fingerprint-{stamp}").resolve()
-    path.mkdir(parents=True, exist_ok=False)
+    try:
+        path.mkdir(parents=True, exist_ok=False)
+    except OSError as error:
+        raise FingerprintError(
+            f"cannot create evidence directory under {root}: {error}"
+        ) from error
     return path
 
 
@@ -1416,7 +1421,10 @@ def run_live(
     output_root: Path | None = None,
     debug_assoc: bool = False,
 ) -> int:
-    encoded_ssid = ssid.encode("utf-8")
+    try:
+        encoded_ssid = ssid.encode("utf-8")
+    except UnicodeEncodeError as error:
+        raise FingerprintError("SSID must be valid UTF-8") from error
     if not encoded_ssid or len(encoded_ssid) > 32:
         raise FingerprintError("SSID must encode to 1..32 UTF-8 bytes")
     root = Path.cwd() if output_root is None else output_root
