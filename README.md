@@ -239,4 +239,10 @@ don't need to re-test the same models.
 | Sky | Q Hub ER110 | PATCHED_HOSTAPD | YARA |
 | Sky | Q Hub ER115 | PATCHED_HOSTAPD | YARA |
 
+## Integrations
 
+Projects that vendor or wrap these detectors:
+
+| Project | What it adds |
+|---------|--------------|
+| [AURIS.net](https://github.com/REGT-URRED/AURIS.net) | Wifite-style 802.11 audit framework (RoE gating, phase engine, offline field bundle) that vendors the fingerprinter and YARA rules, ships an offline affected-device catalog, and exposes `auris broadcom` for catalog lookup, firmware scanning and live fingerprinting. |
