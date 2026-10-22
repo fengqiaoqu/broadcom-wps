@@ -183,6 +183,7 @@ the fingerprinting script using a wireless interface in monitor mode.
 | Cisco | WAP571E | ALL | Y | - |
 | Cisco | WAP581 | ALL | Y | - |
 | Comtrend | VG8050 | ALL | Y | Movistar / O2 / Telefonica | 
+| FiberHome | HG6245D | ? | Y | PLDT, Globe (Philippines) |
 | Huawei | B310 | - | ALL | - |
 | Huawei | B315 | - | ALL | - |
 | Huawei | B593 | - | ALL | - |
